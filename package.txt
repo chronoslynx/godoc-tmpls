@@ -1,0 +1,91 @@
+{{with .PDoc}}{{if $.IsMain}}
+# {{.ImportPath }}
+
+{{ .Doc}}
+{{else}}
+# Package {{ .Name }}
+    import "{{.ImportPath}}"
+
+{{ .Doc}}
+{{example_html $ ""}}
+
+
+## Package Contents
+{{with .Consts}}* Constants{{end}}
+{{with .Vars}}* Variables{{end}}
+{{with .Funcs}}* Functions
+{{range .}}{{$name_html := html .Name}}    * func {{$name_html}}
+{{end}}{{end}}{{range .Types}}{{$tname := .Name}}{{$tname_html := html .Name}}* type {{$tname_html}}
+{{range .Funcs}}{{$name_html := html .Name}}    * func {{$name_html}}
+{{end}}{{range .Methods}}{{$name_html := html .Name}}    * func ({{.Recv}}) {{$name_html}}
+{{end}}{{end}}
+
+
+{{with .Consts}}## Constants <a name="Constants"></a>
+{{range .}}
+```go
+{{node $ .Decl}}
+```
+{{ .Doc}}{{end}}
+{{end}}
+{{with .Vars}}## Variables <a name="Variables"></a>
+{{range .}}
+```go
+{{node $ .Decl}}
+```
+{{ .Doc}}{{end}}
+{{end}}
+{{with .Funcs}} ## Functions <a name="Functions"></a>
+{{range .}}{{$name_html := html .Name}}## func {{$name_html}} <a name="{{$name_html}}"></a>
+```go
+{{node $ .Decl}}
+```
+{{ .Doc}}
+{{example_html $ .Name}}{{end}}
+{{end}}
+{{range .Types}}{{$tname := .Name}}{{$tname_html := html .Name}}## type {{$tname_html}} <a name="{{$tname_html}}"></a>
+```go
+{{node $ .Decl}}
+```
+{{ .Doc}}
+
+{{range .Consts}}
+```go
+{{node $ .Decl}}
+```
+{{ .Doc}}{{end}}
+
+{{range .Vars}}
+```go
+{{node $ .Decl }}
+```
+{{ .Doc}}{{end}}
+
+{{example_html $ $tname}}
+
+{{range .Funcs}}{{$name_html := html .Name}}### func {{$name_html}} <a name="{{$name_html}}-{{$tname_html}}"></a>
+```go
+{{node $ .Decl}}
+```
+{{ .Doc}}
+{{example_html $ .Name}}{{end}}
+
+{{range .Methods}}{{$name_html := html .Name}}### func ({{ .Recv}}) {{$name_html}} <a name="{{$tname_html}}.{{$name_html}}"></a>
+```go
+{{node $ .Decl}}
+```
+{{ .Doc}}
+{{$name := printf "%s_%s" $tname .Name}}{{example_html $ $name}}
+{{end}}{{end}}{{end}}
+
+{{with $.Notes}}
+{{range $marker, $content := .}}
+## {{noteTitle $marker | html}}s
+{{range .}}
+* <a href="{{posLink_url $ .}}">&#x261e;</a> {{html .Body}}
+{{end}}
+{{end}}
+{{end}}
+{{end}}
+
+{{with .PAst}}{{node_html $ . false}}{{end}}
