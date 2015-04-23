@@ -10,15 +10,13 @@
 {{example_html $ ""}}
 
 
-## Package Contents
-{{with .Consts}}* Constants{{end}}
-{{with .Vars}}* Variables{{end}}
-{{with .Funcs}}* Functions
-{{range .}}{{$name_html := html .Name}}    * func {{$name_html}}
-{{end}}{{end}}{{range .Types}}{{$tname := .Name}}{{$tname_html := html .Name}}* type {{$tname_html}}
-{{range .Funcs}}{{$name_html := html .Name}}    * func {{$name_html}}
-{{end}}{{range .Methods}}{{$name_html := html .Name}}    * func ({{.Recv}}) {{$name_html}}
-{{end}}{{end}}
+## Index
+{{if .Consts}}* Constants{{end}}{{if .Vars}}
+* Variables{{end}}{{range .Funcs}}{{$name_html := html .Name}}
+* {{node_html $ .Decl false | sanitize}}{{end}}{{range .Types}}{{$tname := .Name}}{{$tname_html := html .Name}}
+* type {{$tname_html}}{{range .Funcs}}{{$name_html := html .Name}}
+    * {{node_html $ .Decl false | sanitize}}{{end}}{{range .Methods}}{{$name_html := html .Name}}
+    * {{node_html $ .Decl false | sanitize}}{{end}}{{end}}
 
 
 {{with .Consts}}## Constants <a name="Constants"></a>
